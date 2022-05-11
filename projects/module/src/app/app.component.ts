@@ -5,7 +5,6 @@ import {
     FD_PETRI_NET,
     PetriNet,
     PetriNetParserService,
-    PetriNetRegionsService,
     PetriNetRegionSynthesisService,
     PetriNetSerialisationService
 } from 'ilpn-components';
@@ -29,7 +28,6 @@ export class AppComponent {
     private _nets: Array<PetriNet> = [];
 
     constructor(private _parserService: PetriNetParserService,
-                private _regionService: PetriNetRegionsService,
                 private _regionSynthesisService: PetriNetRegionSynthesisService,
                 private _netSerializer: PetriNetSerialisationService) {
 
@@ -47,16 +45,8 @@ export class AppComponent {
         this.showUploadText = false;
         this.result = undefined;
 
-        this._regionSynthesisService.clear();
-
-        this._regionService.computeRegions(this._nets[0], this.slideFc.value).subscribe({
-            next: (r) => {
-                this._regionSynthesisService.addRegion(r);
-            },
-            complete: () => {
-                const result = this._regionSynthesisService.synthesise();
-                this.result = new DropFile('result', this._netSerializer.serialise(result), 'pn');
-            }
+        this._regionSynthesisService.synthesise(this._nets[0], this.slideFc.value).subscribe(result => {
+            this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
         });
 
     }
