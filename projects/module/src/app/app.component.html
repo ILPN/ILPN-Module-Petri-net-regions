@@ -4,8 +4,9 @@
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <ilpn-file-upload descriptionText="drag a labeled Petri net file here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
+        <mat-slide-toggle [formControl]="slideFc" fxFlexAlign="center"><span class="font">one bound regions</span></mat-slide-toggle>
         <!--    TODO region download as .zip    -->
-        <ilpn-file-download descriptionText="click to download synthesis result" [fileDisplay]="FD_PN" [disabled]="result === undefined" [files]="result"></ilpn-file-download>
+        <ilpn-file-download descriptionText="click to download synthesis result" squareContent="🐴" [disabled]="result === undefined" [files]="result"></ilpn-file-download>
     </div>
 
 </ilpn-page-layout>
