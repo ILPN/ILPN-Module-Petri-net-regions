@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {APP_BASE_HREF} from '@angular/common';
-import {FD_PETRI_NET} from 'ilpn-components';
+import {FD_PETRI_NET, PetriNet, PetriNetParserService} from 'ilpn-components';
+import {FormControl} from '@angular/forms';
 
 @Component({
     selector: 'app-root',
@@ -13,4 +14,39 @@ import {FD_PETRI_NET} from 'ilpn-components';
 export class AppComponent {
 
     readonly FD_PN = FD_PETRI_NET;
+    slideFc = new FormControl(false);
+    showUploadText = true;
+
+    private _net: PetriNet | undefined;
+
+    constructor(private _parserService: PetriNetParserService) {
+
+    }
+
+    processFileUpload(fileContent: string) {
+        const net = this._parserService.parse(fileContent);
+        if (net !== undefined) {
+            this._net = net;
+            this.computeRegions(net, this.slideFc.value)
+        }
+    }
+
+    private computeRegions(net: PetriNet, oneBoundRegions: boolean) {
+        this.showUploadText = false;
+
+        // this._synthesisService.clear();
+        //
+        // this._regionService.computeRegions(net, this.slideFc.value).subscribe({
+        //     next: (r) => {
+        //         this._netService.update(r);
+        //         this._synthesisService.addRegion(r);
+        //     },
+        //     complete: () => {
+        //         const result = this._synthesisService.synthesise();
+        //         this._netService.update(result);
+        //         this.synthesisCompleted = true;
+        //     }
+        // });
+
+    }
 }
