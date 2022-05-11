@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {APP_BASE_HREF} from '@angular/common';
-import {DropFile, FD_PETRI_NET, PetriNet, PetriNetParserService} from 'ilpn-components';
+import {DropFile, FD_PETRI_NET, PetriNet, PetriNetParserService, PetriNetRegionsService} from 'ilpn-components';
 import {FormControl} from '@angular/forms';
 
 @Component({
@@ -19,7 +19,7 @@ export class AppComponent {
 
     private _nets: Array<PetriNet> = [];
 
-    constructor(private _parserService: PetriNetParserService) {
+    constructor(private _parserService: PetriNetParserService, private _regionService: PetriNetRegionsService) {
 
     }
 
