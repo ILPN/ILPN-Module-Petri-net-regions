@@ -45,7 +45,7 @@ export class AppComponent {
         this.showUploadText = false;
         this.result = undefined;
 
-        this._regionSynthesisService.synthesise(this._nets[0], this.slideFc.value).subscribe(result => {
+        this._regionSynthesisService.synthesise(this._nets, this.slideFc.value).subscribe(result => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
         });
 
