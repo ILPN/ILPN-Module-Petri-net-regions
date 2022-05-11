@@ -1,6 +1,14 @@
 import {Component} from '@angular/core';
 import {APP_BASE_HREF} from '@angular/common';
-import {DropFile, FD_PETRI_NET, PetriNet, PetriNetParserService, PetriNetRegionsService} from 'ilpn-components';
+import {
+    DropFile,
+    FD_PETRI_NET,
+    PetriNet,
+    PetriNetParserService,
+    PetriNetRegionsService,
+    PetriNetRegionSynthesisService,
+    PetriNetSerialisationService
+} from 'ilpn-components';
 import {FormControl} from '@angular/forms';
 
 @Component({
@@ -16,10 +24,14 @@ export class AppComponent {
     readonly FD_PN = FD_PETRI_NET;
     slideFc = new FormControl(false);
     showUploadText = true;
+    result: DropFile | undefined;
 
     private _nets: Array<PetriNet> = [];
 
-    constructor(private _parserService: PetriNetParserService, private _regionService: PetriNetRegionsService) {
+    constructor(private _parserService: PetriNetParserService,
+                private _regionService: PetriNetRegionsService,
+                private _regionSynthesisService: PetriNetRegionSynthesisService,
+                private _netSerializer: PetriNetSerialisationService) {
 
     }
 
@@ -33,20 +45,19 @@ export class AppComponent {
 
     private computeRegions() {
         this.showUploadText = false;
+        this.result = undefined;
 
-        // this._synthesisService.clear();
-        //
-        // this._regionService.computeRegions(net, this.slideFc.value).subscribe({
-        //     next: (r) => {
-        //         this._netService.update(r);
-        //         this._synthesisService.addRegion(r);
-        //     },
-        //     complete: () => {
-        //         const result = this._synthesisService.synthesise();
-        //         this._netService.update(result);
-        //         this.synthesisCompleted = true;
-        //     }
-        // });
+        this._regionSynthesisService.clear();
+
+        this._regionService.computeRegions(this._nets[0], this.slideFc.value).subscribe({
+            next: (r) => {
+                this._regionSynthesisService.addRegion(r);
+            },
+            complete: () => {
+                const result = this._regionSynthesisService.synthesise();
+                this.result = new DropFile('result', this._netSerializer.serialise(result), 'pn');
+            }
+        });
 
     }
 }
