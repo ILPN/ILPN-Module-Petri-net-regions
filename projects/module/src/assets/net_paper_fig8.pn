@@ -1,0 +1,35 @@
+.type pn
+.transitions
+t1 A
+t2 B
+t3 B
+t4 B
+t5 C
+t6 D
+x X
+.places
+p1 0
+p2 0
+p3 0
+p4 0
+p5 0
+p6 0
+p7 0
+p8 0
+.arcs
+p1 t1 1
+t1 p2 1
+p2 t2 1
+p2 t3 1
+t2 p3 1
+p3 x 1
+x p4 1
+p4 t4 1
+t4 p5 1
+t3 p5 1
+p5 t6 1
+t6 p6 1
+t1 p7 1
+p7 t5 1
+t5 p8 1
+p8 t6 1
