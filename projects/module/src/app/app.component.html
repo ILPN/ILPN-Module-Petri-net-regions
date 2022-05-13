@@ -3,8 +3,13 @@
     <hr>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <ilpn-file-upload descriptionText="drag a labeled Petri net file here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
-        <mat-slide-toggle [formControl]="slideFc" fxFlexAlign="center"><span class="font">one bound regions</span></mat-slide-toggle>
+        <ilpn-file-upload descriptionText="drag a set of labeled Petri net files here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
+
+        <div fxLayout="column" fxLayoutAlign="center start" class="sliders">
+            <mat-slide-toggle [formControl]="fcOneBoundRegions" fxFlexAlign="center" class="slider"><span class="font">one-bound regions</span></mat-slide-toggle>
+            <mat-slide-toggle [formControl]="fcEmptyOutput" fxFlexAlign="center" class="slider"><span class="font">empty at the end</span></mat-slide-toggle>
+        </div>
+
         <!--    TODO region download as .zip    -->
         <ilpn-file-download descriptionText="click to download synthesis result" squareContent="🐴" [disabled]="result === undefined" [files]="result"></ilpn-file-download>
     </div>

@@ -21,7 +21,8 @@ import {FormControl} from '@angular/forms';
 export class AppComponent {
 
     readonly FD_PN = FD_PETRI_NET;
-    slideFc = new FormControl(false);
+    fcOneBoundRegions = new FormControl(false);
+    fcEmptyOutput = new FormControl(false);
     showUploadText = true;
     result: DropFile | undefined;
 
@@ -45,7 +46,10 @@ export class AppComponent {
         this.showUploadText = false;
         this.result = undefined;
 
-        this._regionSynthesisService.synthesise(this._nets, this.slideFc.value).subscribe(result => {
+        this._regionSynthesisService.synthesise(this._nets, {
+            oneBoundRegions: this.fcOneBoundRegions.value,
+            noOutputPlaces: this.fcEmptyOutput.value,
+        }).subscribe(result => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
         });
 
