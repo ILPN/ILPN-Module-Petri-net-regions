@@ -1,0 +1,39 @@
+.type pn
+.transitions
+e5 a
+e6 b
+e7 x
+e7out xo
+e8 b
+e9 c
+e10 d
+.places
+p7 0
+p8 0
+p9 0
+p10 0
+px1 0
+p11 0
+p12 0
+p13 0
+p14 0
+p15 0
+.arcs
+p7 e5 1
+e5 p8 1
+e5 p9 1
+p8 e6 1
+p9 e9 1
+e6 p10 1
+p10 e7 1
+e7 px1 1
+px1 e7out 1
+e7out p11 1
+e7out p12 1
+p11 e8 1
+p12 e9 1
+e8 p13 1
+p13 e10 1
+e9 p14 1
+p14 e10 1
+e10 p15 1

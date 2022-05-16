@@ -1,0 +1,51 @@
+.type pn
+.transitions
+e11 a
+e12 b
+e13 x
+e13out xo
+e14 b
+e15 x
+e15out xo
+e16 b
+e17 c
+e18 d
+.places
+p16 0
+p17 0
+p18 0
+p19 0
+p20 0
+px2 0
+p21 0
+px3 0
+p22 0
+p23 0
+p24 0
+p25 0
+p26 0
+.arcs
+p16 e11 1
+e11 p17 1
+p17 e12 1
+e11 p18 1
+p18 e17 1
+e12 p19 1
+p19 e13 1
+e13 px2 1
+px2 e13out 1
+e13out p20 1
+p20 e14 1
+e14 p21 1
+p21 e15 1
+e15 px3 1
+px3 e15out 1
+e15out p22 1
+p22 e16 1
+e15out p23 1
+p23 e17 1
+e16 p24 1
+p24 e18 1
+e17 p25 1
+p25 e18 1
+e18 p26 1
