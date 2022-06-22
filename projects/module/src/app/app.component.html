@@ -1,8 +1,8 @@
 <ilpn-page-layout>
-    <h2>Synthesize a Petri net from a set of labeled Petri nets - This algorithm will be presented at the <br> ATAED 2022 workshop.<br>Here, we use the concepts of: ILP, minimal regions, and generate a Petri net with arc-weights but without short-loops.</h2>
+    <h2>Synthesize a Petri net from a set of labeled Petri nets - This algorithm was presented at the <br> ATAED 2022 workshop.<br>Here, we use the concepts of: ILP, minimal regions, and generate a Petri net with arc-weights but without short-loops.</h2>
     <hr>
 
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
+    <div fxLayout="row wrap" fxLayoutAlign="space-evenly start">
         <ilpn-file-upload descriptionText="drag a set of labeled Petri net files here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
 
         <div fxLayout="column" fxLayoutAlign="center start" class="sliders">
@@ -16,7 +16,7 @@
 
     <hr>
     <h2>download examples</h2>
-    <div fxLayout="row">
+    <div fxLayout="row wrap">
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="transition system" description="Petri net from Fig. 4 of the workshop paper" link="assets/net_paper_fig4.pn" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="partial language" description="Petri nets from Fig. 1 of the workshop paper" [link]="['assets/net_paper_fig1a.pn','assets/net_paper_fig1b.pn','assets/net_paper_fig1c.pn']"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="labeled Petri net" description="Petri net from Fig. 8 of the workshop paper" link="assets/net_paper_fig8.pn" [download]="true"></ilpn-descriptive-link>
