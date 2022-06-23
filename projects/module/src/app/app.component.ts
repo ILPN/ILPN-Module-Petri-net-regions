@@ -23,6 +23,7 @@ export class AppComponent {
     readonly FD_PN = FD_PETRI_NET;
     fcOneBoundRegions = new FormControl(false);
     fcEmptyOutput = new FormControl(false);
+    fcPartialOrders = new FormControl(false);
     showUploadText = true;
     result: DropFile | undefined;
 
@@ -49,6 +50,7 @@ export class AppComponent {
         this._regionSynthesisService.synthesise(this._nets, {
             oneBoundRegions: this.fcOneBoundRegions.value,
             noOutputPlaces: this.fcEmptyOutput.value,
+            obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe(result => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
         });
