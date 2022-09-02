@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {APP_BASE_HREF} from '@angular/common';
 import {
     DropFile,
     FD_PETRI_NET,
@@ -13,10 +12,7 @@ import {FormControl} from '@angular/forms';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    providers: [
-        {provide: APP_BASE_HREF, useValue: '/ilovepetrinets/horse/'}
-    ]
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
 
