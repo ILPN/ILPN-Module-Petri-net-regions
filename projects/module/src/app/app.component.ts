@@ -44,7 +44,7 @@ export class AppComponent {
         this.result = undefined;
 
         this._regionSynthesisService.synthesise(this._nets, {
-            oneBoundRegions: this.fcOneBoundRegions.value,
+            noArcWeights: this.fcOneBoundRegions.value,
             noOutputPlaces: this.fcEmptyOutput.value,
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe(result => {

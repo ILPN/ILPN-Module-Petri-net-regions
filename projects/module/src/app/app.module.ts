@@ -1,7 +1,13 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppComponent} from './app.component';
-import {IlpnComponentsModule} from 'ilpn-components';
+import {
+    IlpnAlgorithmsModule,
+    IlpnComponentsModule,
+    PetriNetLayoutManagerFactoryService,
+    PnDisplayModule,
+    SpringEmbedderLayoutManagerFactoryService
+} from 'ilpn-components';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -15,6 +21,10 @@ import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
     imports: [
         BrowserModule,
         IlpnComponentsModule,
+        PnDisplayModule,
+        IlpnAlgorithmsModule.withDebugConfig({
+            logRegions: true
+        }),
         FlexLayoutModule,
         ReactiveFormsModule,
         MatSlideToggleModule,
@@ -25,6 +35,10 @@ import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
             provide: APP_BASE_HREF,
             useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
             deps: [PlatformLocation]
+        },
+        {
+            provide: PetriNetLayoutManagerFactoryService,
+            useExisting: SpringEmbedderLayoutManagerFactoryService,
         }
     ],
     bootstrap: [AppComponent]
