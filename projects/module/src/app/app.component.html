@@ -6,6 +6,17 @@
     </h2>
     <hr>
 
+    <!--  Welcome layout  -->
+    <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="initialUpload">
+        <ilpn-file-upload descriptionText="Upload a set of labeled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
+        <mat-spinner *ngIf="loading$ | async"></mat-spinner>
+    </div>
+
+    <!--  Working layout  -->
+    <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!initialUpload">
+
+    </div>
+
     <div fxLayout="row wrap" fxLayoutAlign="space-evenly start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
         <ilpn-file-upload descriptionText="drag a set of labeled Petri net files here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
 
@@ -20,7 +31,7 @@
     </div>
 
     <hr>
-    <h2>download examples</h2>
+    <h2>examples from <i>A First Glimpse at Petri Net Regions (2022)</i></h2>
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="transition system" description="Petri net from Fig. 4 of the workshop paper" link="assets/net_paper_fig4.pn" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="partial language" description="Petri nets from Fig. 1 of the workshop paper" [link]="['assets/net_paper_fig1a.pn','assets/net_paper_fig1b.pn','assets/net_paper_fig1c.pn']"></ilpn-descriptive-link>

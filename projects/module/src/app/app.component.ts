@@ -8,6 +8,7 @@ import {
     PetriNetSerialisationService
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
+import {BehaviorSubject} from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -17,10 +18,13 @@ import {FormControl} from '@angular/forms';
 export class AppComponent {
 
     readonly FD_PN = FD_PETRI_NET;
+    // TODO arc weights / self-loops
     fcOneBoundRegions = new FormControl(false);
     fcEmptyOutput = new FormControl(false);
     fcPartialOrders = new FormControl(false);
     showUploadText = true;
+    initialUpload = true;
+    loading$ = new BehaviorSubject<boolean>(false);
     result: DropFile | undefined;
 
     private _nets: Array<PetriNet> = [];
@@ -42,6 +46,7 @@ export class AppComponent {
     private computeRegions() {
         this.showUploadText = false;
         this.result = undefined;
+        this.loading$.next(true);
 
         this._regionSynthesisService.synthesise(this._nets, {
             noArcWeights: this.fcOneBoundRegions.value,
@@ -49,6 +54,8 @@ export class AppComponent {
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe(result => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
+            this.initialUpload = false;
+            this.loading$.next(false)
         });
 
     }
