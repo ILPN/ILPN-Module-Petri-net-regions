@@ -57,10 +57,12 @@ export class AppComponent {
     processFileUpload(fileContent: Array<DropFile>) {
         const parsedNets = fileContent.map(f => ({net: this._parserService.parse(f.content), fileName: f.name})).filter(pr => pr.net !== undefined);
         if (parsedNets.length > 0) {
-            this._nets = parsedNets.map(pn => pn.net) as Array<PetriNet>;
-            this.inputTabs = parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}));
+            this._nets = [...this._nets, ...parsedNets.map(pn => pn.net) as Array<PetriNet>];
+            this.inputTabs = [...this.inputTabs, ...parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}))];
             this.inputs$.next(this._nets);
-            this._selectedTabIndex = 0;
+            if (this._selectedTabIndex === undefined) {
+                this._selectedTabIndex = 0;
+            }
             this.computeRegions()
         }
     }
@@ -113,6 +115,7 @@ export class AppComponent {
         this.inputTabs = [...this.inputTabs] // TODO replace by .toSpliced() when we update JS version
         if (this._nets.length === 0) {
             this.noNets = true;
+            this._selectedTabIndex = undefined;
         } else {
             this.computeRegions();
         }
