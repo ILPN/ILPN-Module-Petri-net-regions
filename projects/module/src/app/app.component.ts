@@ -5,10 +5,11 @@ import {
     PetriNet,
     PetriNetParserService,
     PetriNetRegionSynthesisService,
-    PetriNetSerialisationService
+    PetriNetSerialisationService,
+    SynthesisResult
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, filter, map, Observable} from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -26,19 +27,27 @@ export class AppComponent {
     initialUpload = true;
     loading$ = new BehaviorSubject<boolean>(false);
     result: DropFile | undefined;
+    result$: BehaviorSubject<PetriNet | undefined>;
+    inputs$: BehaviorSubject<Array<PetriNet>>;
+    resultNet$: Observable<PetriNet>;
+    inputNet$: Observable<PetriNet>;
 
     private _nets: Array<PetriNet> = [];
 
     constructor(private _parserService: PetriNetParserService,
                 private _regionSynthesisService: PetriNetRegionSynthesisService,
                 private _netSerializer: PetriNetSerialisationService) {
-
+        this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
+        this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
+        this.resultNet$ = this.result$.pipe(filter(v => v !== undefined)) as Observable<PetriNet>;
+        this.inputNet$ = this.inputs$.pipe(filter(v => v.length > 0), map(v => v[0]));
     }
 
     processFileUpload(fileContent: Array<DropFile>) {
         const nets = fileContent.map(f => this._parserService.parse(f.content)).filter(pn => pn !== undefined);
         if (nets.length > 0) {
             this._nets = nets as Array<PetriNet>;
+            this.inputs$.next(this._nets);
             this.computeRegions()
         }
     }
@@ -52,9 +61,10 @@ export class AppComponent {
             noArcWeights: this.fcOneBoundRegions.value,
             noOutputPlaces: this.fcEmptyOutput.value,
             obtainPartialOrders: this.fcPartialOrders.value
-        }).subscribe(result => {
+        }).subscribe((result: SynthesisResult) => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
             this.initialUpload = false;
+            this.result$.next(result.result);
             this.loading$.next(false)
         });
 

@@ -14,7 +14,10 @@
 
     <!--  Working layout  -->
     <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!initialUpload">
-
+        <ilpn-pn-display class="drawing-area" [petriNet$]="resultNet$"></ilpn-pn-display>
+        <hr class="dotted">
+        <!--    TODO switching + uploads + deletes    -->
+        <ilpn-pn-display class="drawing-area" [petriNet$]="inputNet$"></ilpn-pn-display>
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="space-evenly start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
