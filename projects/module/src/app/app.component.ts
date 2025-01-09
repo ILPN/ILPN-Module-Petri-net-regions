@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {
     DropFile,
     FD_PETRI_NET,
+    IncrementingCounter,
     PetriNet,
     PetriNetParserService,
     PetriNetRegionSynthesisService,
@@ -10,6 +11,7 @@ import {
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
 import {BehaviorSubject, filter, map, Observable} from "rxjs";
+import {InputTab} from "./model/input-tab";
 
 @Component({
     selector: 'app-root',
@@ -31,6 +33,8 @@ export class AppComponent {
     inputs$: BehaviorSubject<Array<PetriNet>>;
     resultNet$: Observable<PetriNet>;
     inputNet$: Observable<PetriNet>;
+    private _tabIdCounter: IncrementingCounter = new IncrementingCounter();
+    inputTabs: Array<InputTab> = [];
 
     private _nets: Array<PetriNet> = [];
 
@@ -44,9 +48,10 @@ export class AppComponent {
     }
 
     processFileUpload(fileContent: Array<DropFile>) {
-        const nets = fileContent.map(f => this._parserService.parse(f.content)).filter(pn => pn !== undefined);
-        if (nets.length > 0) {
-            this._nets = nets as Array<PetriNet>;
+        const parsedNets = fileContent.map(f => ({net: this._parserService.parse(f.content), fileName: f.name})).filter(pr => pr.net !== undefined);
+        if (parsedNets.length > 0) {
+            this._nets = parsedNets.map(pn => pn.net) as Array<PetriNet>;
+            this.inputTabs = parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}));
             this.inputs$.next(this._nets);
             this.computeRegions()
         }
@@ -68,5 +73,9 @@ export class AppComponent {
             this.loading$.next(false)
         });
 
+    }
+
+    trackTabById(index: number, tab: InputTab): number {
+        return tab.id;
     }
 }

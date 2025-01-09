@@ -14,6 +14,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
         MatSlideToggleModule,
         BrowserAnimationsModule,
         MatProgressSpinnerModule,
+        MatTabsModule,
     ],
     providers: [
         {

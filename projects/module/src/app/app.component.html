@@ -18,6 +18,11 @@
         <hr class="dotted">
         <!--    TODO switching + uploads + deletes    -->
         <ilpn-pn-display class="drawing-area" [petriNet$]="inputNet$"></ilpn-pn-display>
+        <mat-tab-group class="full-width" headerPosition="below" animationDuration="0ms">
+<!--            <mat-tab *ngFor="let tab of inputTabs" [ngForTrackBy]="tab.id" [label]="tab.label"></mat-tab>-->
+                <mat-tab *ngFor="let tab of inputTabs; trackBy: trackTabById" [label]="tab.label"></mat-tab>
+        </mat-tab-group>
+
     </div>
 
     <div fxLayout="row wrap" fxLayoutAlign="space-evenly start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
