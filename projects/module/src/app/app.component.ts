@@ -10,7 +10,7 @@ import {
     SynthesisResult
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
-import {BehaviorSubject, filter, map, Observable} from "rxjs";
+import {BehaviorSubject, filter, map, merge, Observable, Subject} from "rxjs";
 import {InputTab} from "./model/input-tab";
 
 @Component({
@@ -33,6 +33,7 @@ export class AppComponent {
     inputs$: BehaviorSubject<Array<PetriNet>>;
     resultNet$: Observable<PetriNet>;
     inputNet$: Observable<PetriNet>;
+    showNet$: Subject<PetriNet>;
     private _tabIdCounter: IncrementingCounter = new IncrementingCounter();
     inputTabs: Array<InputTab> = [];
 
@@ -43,8 +44,12 @@ export class AppComponent {
                 private _netSerializer: PetriNetSerialisationService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
+        this.showNet$ = new Subject();
         this.resultNet$ = this.result$.pipe(filter(v => v !== undefined)) as Observable<PetriNet>;
-        this.inputNet$ = this.inputs$.pipe(filter(v => v.length > 0), map(v => v[0]));
+        this.inputNet$ = merge(
+            this.inputs$.pipe(filter(v => v.length > 0), map(v => v[0])),
+            this.showNet$.asObservable()
+        );
     }
 
     processFileUpload(fileContent: Array<DropFile>) {
@@ -73,6 +78,10 @@ export class AppComponent {
             this.loading$.next(false)
         });
 
+    }
+
+    selectedTabIndexChanged(newIndex: number) {
+        this.showNet$.next(this._nets[newIndex]);
     }
 
     trackTabById(index: number, tab: InputTab): number {
