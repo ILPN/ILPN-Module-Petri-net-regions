@@ -9,12 +9,16 @@
     <!--  Welcome layout  -->
     <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="noNets">
         <ilpn-file-upload descriptionText="Upload a set of labeled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
-        <mat-spinner *ngIf="loading$ | async"></mat-spinner>
+        <mat-spinner *ngIf="loading$ | async" color="accent"></mat-spinner>
     </div>
 
     <!--  Working layout  -->
     <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!noNets">
-        <ilpn-pn-display class="drawing-area drawing-area-dimensions" [petriNet$]="resultNet$"></ilpn-pn-display>
+        <ilpn-pn-display class="drawing-area drawing-area-dimensions position-relative" [petriNet$]="resultNet$">
+            <div class="loading-blocker" *ngIf="loading$ | async" fxLayoutAlign="center center">
+                <mat-spinner color="accent"></mat-spinner>
+            </div>
+        </ilpn-pn-display>
         <hr class="dotted">
         <ilpn-file-upload-overlay (fileContent)="processFileUpload($event)">
             <div class="drawing-area-dimensions">
