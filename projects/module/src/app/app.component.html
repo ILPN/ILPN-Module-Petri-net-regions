@@ -7,19 +7,28 @@
     <hr>
 
     <!--  Welcome layout  -->
-    <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="initialUpload">
+    <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="noNets">
         <ilpn-file-upload descriptionText="Upload a set of labeled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
         <mat-spinner *ngIf="loading$ | async"></mat-spinner>
     </div>
 
     <!--  Working layout  -->
-    <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!initialUpload">
+    <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!noNets">
         <ilpn-pn-display class="drawing-area" [petriNet$]="resultNet$"></ilpn-pn-display>
         <hr class="dotted">
-        <!--    TODO switching + uploads + deletes    -->
+        <!--    TODO uploads    -->
         <ilpn-pn-display class="drawing-area" [petriNet$]="inputNet$"></ilpn-pn-display>
         <mat-tab-group class="full-width" headerPosition="below" animationDuration="0ms" (selectedIndexChange)="selectedTabIndexChanged($event)">
-            <mat-tab *ngFor="let tab of inputTabs; trackBy: trackTabById" [label]="tab.label"></mat-tab>
+            <mat-tab *ngFor="let tab of inputTabs;let i=index; trackBy: trackTabById">
+                <ng-template mat-tab-label>
+                    {{tab.label}}
+                    <button mat-icon-button class="margin-left"
+                            (mousedown)="prevent($event)"
+                            (click)="tabDeleteButtonClick($event,i)" aria-label="Remove net from synthesis input">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </ng-template>
+            </mat-tab>
         </mat-tab-group>
 
     </div>

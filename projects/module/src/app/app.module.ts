@@ -15,6 +15,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
     declarations: [
@@ -33,6 +35,8 @@ import {MatTabsModule} from "@angular/material/tabs";
         BrowserAnimationsModule,
         MatProgressSpinnerModule,
         MatTabsModule,
+        MatIconModule,
+        MatButtonModule,
     ],
     providers: [
         {

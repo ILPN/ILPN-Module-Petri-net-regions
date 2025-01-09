@@ -26,7 +26,7 @@ export class AppComponent {
     fcEmptyOutput = new FormControl(false);
     fcPartialOrders = new FormControl(false);
     showUploadText = true;
-    initialUpload = true;
+    noNets = true;
     loading$ = new BehaviorSubject<boolean>(false);
     result: DropFile | undefined;
     result$: BehaviorSubject<PetriNet | undefined>;
@@ -35,7 +35,9 @@ export class AppComponent {
     inputNet$: Observable<PetriNet>;
     showNet$: Subject<PetriNet>;
     private _tabIdCounter: IncrementingCounter = new IncrementingCounter();
+
     inputTabs: Array<InputTab> = [];
+    private _selectedTabIndex: number | undefined;
 
     private _nets: Array<PetriNet> = [];
 
@@ -58,6 +60,7 @@ export class AppComponent {
             this._nets = parsedNets.map(pn => pn.net) as Array<PetriNet>;
             this.inputTabs = parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}));
             this.inputs$.next(this._nets);
+            this._selectedTabIndex = 0;
             this.computeRegions()
         }
     }
@@ -73,7 +76,7 @@ export class AppComponent {
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
             this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
-            this.initialUpload = false;
+            this.noNets = false;
             this.result$.next(result.result);
             this.loading$.next(false)
         });
@@ -82,6 +85,37 @@ export class AppComponent {
 
     selectedTabIndexChanged(newIndex: number) {
         this.showNet$.next(this._nets[newIndex]);
+        this._selectedTabIndex = newIndex;
+    }
+
+    prevent(e: MouseEvent) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    tabDeleteButtonClick(e: MouseEvent, index: number) {
+        this.prevent(e);
+        if (this._selectedTabIndex === undefined) {
+            console.error("illegal state: delete button pressed and selected index is undefined");
+            return;
+        }
+        if (index < this._selectedTabIndex) {
+            this._selectedTabIndex--;
+        } else if (index === this._selectedTabIndex) {
+            if (index !== this._nets.length - 1) {
+                this.selectedTabIndexChanged(index + 1);
+            } else if (index !== 0) {
+                this.selectedTabIndexChanged(index - 1);
+            }
+        }
+        this._nets.splice(index, 1);
+        this.inputTabs.splice(index, 1)
+        this.inputTabs = [...this.inputTabs] // TODO replace by .toSpliced() when we update JS version
+        if (this._nets.length === 0) {
+            this.noNets = true;
+        } else {
+            this.computeRegions();
+        }
     }
 
     trackTabById(index: number, tab: InputTab): number {
