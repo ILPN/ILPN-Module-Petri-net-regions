@@ -14,22 +14,25 @@
 
     <!--  Working layout  -->
     <div fxLayout="column" fxLayoutAlign="start stretch" *ngIf="!noNets">
-        <ilpn-pn-display class="drawing-area" [petriNet$]="resultNet$"></ilpn-pn-display>
+        <ilpn-pn-display class="drawing-area drawing-area-dimensions" [petriNet$]="resultNet$"></ilpn-pn-display>
         <hr class="dotted">
-        <!--    TODO uploads    -->
-        <ilpn-pn-display class="drawing-area" [petriNet$]="inputNet$"></ilpn-pn-display>
-        <mat-tab-group class="full-width" headerPosition="below" animationDuration="0ms" (selectedIndexChange)="selectedTabIndexChanged($event)">
-            <mat-tab *ngFor="let tab of inputTabs;let i=index; trackBy: trackTabById">
-                <ng-template mat-tab-label>
-                    {{tab.label}}
-                    <button mat-icon-button class="margin-left"
-                            (mousedown)="prevent($event)"
-                            (click)="tabDeleteButtonClick($event,i)" aria-label="Remove net from synthesis input">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </ng-template>
-            </mat-tab>
-        </mat-tab-group>
+        <ilpn-file-upload-overlay (fileContent)="processFileUpload($event)">
+            <div class="drawing-area-dimensions">
+                <ilpn-pn-display class="drawing-area full-width clipped-height" [petriNet$]="inputNet$"></ilpn-pn-display>
+                <mat-tab-group class="full-width" headerPosition="below" animationDuration="0ms" (selectedIndexChange)="selectedTabIndexChanged($event)">
+                    <mat-tab *ngFor="let tab of inputTabs;let i=index; trackBy: trackTabById">
+                        <ng-template mat-tab-label>
+                            {{tab.label}}
+                            <button mat-icon-button class="margin-left"
+                                    (mousedown)="prevent($event)"
+                                    (click)="tabDeleteButtonClick($event,i)" aria-label="Remove net from synthesis input">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </ng-template>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </ilpn-file-upload-overlay>
 
     </div>
 
