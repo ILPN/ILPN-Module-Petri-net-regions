@@ -27,7 +27,7 @@ import {MatButtonModule} from "@angular/material/button";
         IlpnComponentsModule,
         PnDisplayModule,
         IlpnAlgorithmsModule.withDebugConfig({
-            logRegions: true
+            // logRegions: true
         }),
         FlexLayoutModule,
         ReactiveFormsModule,

@@ -12,6 +12,7 @@ import {
 import {FormControl} from '@angular/forms';
 import {BehaviorSubject, filter, map, merge, Observable, Subject} from "rxjs";
 import {InputTab} from "./model/input-tab";
+import {ParserResult} from "./model/parser-result";
 
 @Component({
     selector: 'app-root',
@@ -55,9 +56,16 @@ export class AppComponent {
     }
 
     processFileUpload(fileContent: Array<DropFile>) {
-        const parsedNets = fileContent.map(f => ({net: this._parserService.parse(f.content), fileName: f.name})).filter(pr => pr.net !== undefined);
+        const parsedNets: Array<ParserResult> = fileContent
+            .map(f => ({net: this._parserService.parse(f.content), fileName: f.name}))
+            .filter(pr => pr.net !== undefined)
+            .map(pr => {
+                // imply initial marking
+                PetriNet.implyInitialMarking(pr.net!);
+                return pr;
+            });
         if (parsedNets.length > 0) {
-            this._nets = [...this._nets, ...parsedNets.map(pn => pn.net) as Array<PetriNet>];
+            this._nets = [...this._nets, ...parsedNets.map(pn => pn.net) as unknown as Array<PetriNet>];
             this.inputTabs = [...this.inputTabs, ...parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}))];
             this.inputs$.next(this._nets);
             if (this._selectedTabIndex === undefined) {
