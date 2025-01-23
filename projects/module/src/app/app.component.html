@@ -40,18 +40,18 @@
 
     </div>
 
-    <div fxLayout="row wrap" fxLayoutAlign="space-evenly start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
-        <ilpn-file-upload descriptionText="drag a set of labeled Petri net files here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
+<!--    <div fxLayout="row wrap" fxLayoutAlign="space-evenly start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">-->
+<!--        <ilpn-file-upload descriptionText="drag a set of labeled Petri net files here" [fileDisplay]="FD_PN" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>-->
 
-        <div fxLayout="column" fxLayoutAlign="center start" class="sliders">
-            <mat-slide-toggle [formControl]="fcOneBoundRegions" fxFlexAlign="center" class="slider"><span class="font">one-bound regions</span></mat-slide-toggle>
-            <mat-slide-toggle [formControl]="fcEmptyOutput" fxFlexAlign="center" class="slider"><span class="font">empty at the end</span></mat-slide-toggle>
-            <mat-slide-toggle [formControl]="fcPartialOrders" fxFlexAlign="center" class="slider"><span class="font">partial order output</span></mat-slide-toggle>
-        </div>
+<!--        <div fxLayout="column" fxLayoutAlign="center start" class="sliders">-->
+<!--            <mat-slide-toggle [formControl]="fcOneBoundRegions" fxFlexAlign="center" class="slider"><span class="font">one-bound regions</span></mat-slide-toggle>-->
+<!--            <mat-slide-toggle [formControl]="fcEmptyOutput" fxFlexAlign="center" class="slider"><span class="font">empty at the end</span></mat-slide-toggle>-->
+<!--            <mat-slide-toggle [formControl]="fcPartialOrders" fxFlexAlign="center" class="slider"><span class="font">partial order output</span></mat-slide-toggle>-->
+<!--        </div>-->
 
-        <!--    TODO region download as .zip    -->
-        <ilpn-file-download descriptionText="click to download synthesis result" squareContent="🐴" [disabled]="result === undefined" [files]="result"></ilpn-file-download>
-    </div>
+<!--        &lt;!&ndash;    TODO region download as .zip    &ndash;&gt;-->
+<!--        <ilpn-file-download descriptionText="click to download synthesis result" squareContent="🐴" [disabled]="result === undefined" [files]="result"></ilpn-file-download>-->
+<!--    </div>-->
 
     <hr>
     <h2>examples from <i>A First Glimpse at Petri Net Regions (2022)</i></h2>
