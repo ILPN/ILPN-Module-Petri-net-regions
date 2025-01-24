@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {
+    DanglingPlaceRemoverService,
     DropFile,
     FD_PETRI_NET,
     IncrementingCounter,
@@ -44,7 +45,8 @@ export class AppComponent {
 
     constructor(private _parserService: PetriNetParserService,
                 private _regionSynthesisService: PetriNetRegionSynthesisService,
-                private _netSerializer: PetriNetSerialisationService) {
+                private _netSerializer: PetriNetSerialisationService,
+                private _postProcessing: DanglingPlaceRemoverService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
         this.showNet$ = new Subject();
@@ -60,7 +62,6 @@ export class AppComponent {
             .map(f => ({net: this._parserService.parse(f.content), fileName: f.name}))
             .filter(pr => pr.net !== undefined)
             .map(pr => {
-                // imply initial marking
                 PetriNet.implyInitialMarking(pr.net!);
                 return pr;
             });
@@ -85,9 +86,10 @@ export class AppComponent {
             noOutputPlaces: this.fcEmptyOutput.value,
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
-            this.result = new DropFile('result', this._netSerializer.serialise(result.result), 'pn');
+            const net = this._postProcessing.removeDanglingPlaces(result.result);
+            this.result = new DropFile('result', this._netSerializer.serialise(net), 'pn');
             this.noNets = false;
-            this.result$.next(result.result);
+            this.result$.next(net);
             this.loading$.next(false)
         });
 
