@@ -8,6 +8,7 @@ import {
     PetriNetParserService,
     PetriNetRegionSynthesisService,
     PetriNetSerialisationService,
+    PnOutputFileFormat,
     SynthesisResult
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
@@ -87,7 +88,9 @@ export class AppComponent {
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
             const net = this._postProcessing.removeDanglingPlaces(result.result);
-            this.result = new DropFile('result', this._netSerializer.serialise(net), 'pn');
+            const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
+            console.debug(ser);
+            this.result = new DropFile('result', ser, 'json');
             this.noNets = false;
             this.result$.next(net);
             this.loading$.next(false)
