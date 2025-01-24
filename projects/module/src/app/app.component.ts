@@ -4,6 +4,7 @@ import {
     DropFile,
     FD_PETRI_NET,
     IncrementingCounter,
+    ImplicitPlaceRemoverService,
     PetriNet,
     PetriNetParserService,
     PetriNetRegionSynthesisService,
@@ -47,7 +48,8 @@ export class AppComponent {
     constructor(private _parserService: PetriNetParserService,
                 private _regionSynthesisService: PetriNetRegionSynthesisService,
                 private _netSerializer: PetriNetSerialisationService,
-                private _postProcessing: DanglingPlaceRemoverService) {
+                private _postProcessing: DanglingPlaceRemoverService,
+                private _implicitPlaceRemover: ImplicitPlaceRemoverService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
         this.showNet$ = new Subject();
@@ -82,14 +84,22 @@ export class AppComponent {
         this.result = undefined;
         this.loading$.next(true);
 
+        const timeStart = performance.now();
+
         this._regionSynthesisService.synthesise(this._nets, {
             noArcWeights: this.fcOneBoundRegions.value,
             noOutputPlaces: this.fcEmptyOutput.value,
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
-            const net = this._postProcessing.removeDanglingPlaces(result.result);
+            const timeEnd = performance.now();
+            // const net = result.result;
+            const net = this._implicitPlaceRemover.removeImplicitPlaces(this._postProcessing.removeDanglingPlaces(result.result));
+            const timeEndPost = performance.now();
+
             const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
             console.debug(ser);
+            console.debug('elapsed time in synthesis (without post processing) [ms]', timeEnd-timeStart);
+            console.debug('elapsed time post processing [ms]', timeEndPost-timeEnd);
             this.result = new DropFile('result', ser, 'json');
             this.noNets = false;
             this.result$.next(net);
