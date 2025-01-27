@@ -1,14 +1,14 @@
 <ilpn-page-layout>
     <h2>
-        Synthesize a Petri net from a set of labeled Petri nets - This algorithm was presented in
-        <br> <a href="https://petrinets2022.github.io/pdf/ATAED-Paper-4.pdf">A First Glimpse at Petri Net Regions</a> by R. Bergenthum and J. Kovář at the ATAED 2022 workshop.
-        <br> Here, we use the concepts of: ILP, minimal regions, and generate a Petri net with arc-weights but without short-loops.
+        <b>Synthesize a Petri net from a set of labelled Petri nets</b> - This tool is discussed in
+        <br> <a href="https://petrinets2022.github.io/pdf/ATAED-Paper-4.pdf">A First Glimpse at Petri Net Regions</a> by R. Bergenthum and J. Kovář presented at the ATAED 2022 workshop,
+        <br> and <i>Synthesizing Petri Nets from Labelled Petri Nets</i> by R. Bergenthum and J. Kovář submitted to PETRI NETS 2025.
     </h2>
     <hr>
 
     <!--  Welcome layout  -->
     <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="noNets">
-        <ilpn-file-upload descriptionText="Upload a set of labeled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
+        <ilpn-file-upload descriptionText="Upload a set of labelled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
         <mat-spinner *ngIf="loading$ | async" color="accent"></mat-spinner>
     </div>
 
@@ -59,7 +59,7 @@
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 1" description="Petri net-based specification from Fig. 4 of the paper" [link]="['assets/Figure-4-1.json','assets/Figure-4-2.json','assets/Figure-4-3.json','assets/Figure-4-4.json']" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 2" description="State-based specification from Fig. 2 of the paper" link="assets/Figure-2.json" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 3" description="Language-based specification, first four runs from Fig. 3 of the paper" [link]="['assets/Figure-3-1.json','assets/Figure-3-2.json','assets/Figure-3-4.json','assets/Figure-3-5.json']"></ilpn-descriptive-link>
-        <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 4" description="Petri net from Fig. 1 of the paper and a firing sequence" [link]="['assets/Figure-4-4.json','assets/Figure-3-1-2~merged.json']" [download]="true"></ilpn-descriptive-link>
+        <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 4" description="Two general labelled nets" [link]="['assets/Experiment-4-1.json','assets/Experiment-4-2.json']" [download]="true"></ilpn-descriptive-link>
     </div>
 
     <hr class="margin-divider-old-examples">
@@ -67,7 +67,7 @@
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayout.sm="column" fxLayoutAlign.sm="space-between center">
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="transition system" description="Petri net from Fig. 4 of the workshop paper" link="assets/net_paper_fig4.pn" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="partial language" description="Petri nets from Fig. 1 of the workshop paper" [link]="['assets/net_paper_fig1a.pn','assets/net_paper_fig1b.pn','assets/net_paper_fig1c.pn']"></ilpn-descriptive-link>
-        <ilpn-descriptive-link [fileDisplay]="FD_PN" title="labeled Petri net" description="Petri net from Fig. 8 of the workshop paper" link="assets/net_paper_fig8.pn" [download]="true"></ilpn-descriptive-link>
+        <ilpn-descriptive-link [fileDisplay]="FD_PN" title="labelled Petri net" description="Petri net from Fig. 8 of the workshop paper" link="assets/net_paper_fig8.pn" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="branching process" description="Petri net from Fig. 10 of the workshop paper" link="assets/net_paper_fig10.pn" [download]="true"></ilpn-descriptive-link>
     </div>
 
