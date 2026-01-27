@@ -26,9 +26,9 @@ export class AppComponent {
 
     readonly FD_PN = FD_PETRI_NET;
     // TODO arc weights / self-loops
-    fcOneBoundRegions = new FormControl(false);
-    fcEmptyOutput = new FormControl(false);
-    fcPartialOrders = new FormControl(false);
+    fcOneBoundRegions = new FormControl<boolean>(false);
+    fcEmptyOutput = new FormControl<boolean>(false);
+    fcPartialOrders = new FormControl<boolean>(false);
     showUploadText = true;
     noNets = true;
     loading$ = new BehaviorSubject<boolean>(false);
