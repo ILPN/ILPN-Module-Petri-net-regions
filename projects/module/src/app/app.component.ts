@@ -10,6 +10,7 @@ import {
     PetriNetRegionSynthesisService,
     PetriNetSerialisationService,
     PnOutputFileFormat,
+    PostPlaceAdderService,
     SynthesisResult
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
@@ -49,7 +50,8 @@ export class AppComponent {
                 private _regionSynthesisService: PetriNetRegionSynthesisService,
                 private _netSerializer: PetriNetSerialisationService,
                 private _postProcessing: DanglingPlaceRemoverService,
-                private _implicitPlaceRemover: ImplicitPlaceRemoverService) {
+                private _implicitPlaceRemover: ImplicitPlaceRemoverService,
+                private _postPlaceAdder: PostPlaceAdderService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
         this.showNet$ = new Subject();
@@ -88,12 +90,15 @@ export class AppComponent {
 
         this._regionSynthesisService.synthesise(this._nets, {
             noArcWeights: this.fcOneBoundRegions.value,
-            noOutputPlaces: this.fcMode.value === 'discovery',
+            noOutputPlaces: this.isDiscoveryMode(),
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
             const timeEnd = performance.now();
-            // const net = result.result;
-            const net = this._implicitPlaceRemover.removeImplicitPlaces(this._postProcessing.removeDanglingPlaces(result.result));
+
+            let net = this._implicitPlaceRemover.removeImplicitPlaces(this._postProcessing.removeDanglingPlaces(result.result));
+            if (this.isDiscoveryMode()) {
+                net = this._postPlaceAdder.addPostPlaces(net);
+            }
             const timeEndPost = performance.now();
 
             const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
@@ -146,5 +151,9 @@ export class AppComponent {
 
     trackTabById(index: number, tab: InputTab): number {
         return tab.id;
+    }
+
+    private isDiscoveryMode(): boolean {
+        return this.fcMode.value === 'discovery';
     }
 }
