@@ -15,6 +15,8 @@ import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
 import {MatIconModule} from "@angular/material/icon";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTabsModule} from "@angular/material/tabs";
+import {MatIconButton} from "@angular/material/button";
+import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
 
 @NgModule({
     declarations: [
@@ -35,6 +37,9 @@ import {MatTabsModule} from "@angular/material/tabs";
         MatIconModule,
         MatProgressSpinnerModule,
         MatTabsModule,
+        MatIconButton,
+        MatButtonToggleGroup,
+        MatButtonToggle,
     ],
     providers: [
         {

@@ -8,7 +8,13 @@
 
     <!--  Welcome layout  -->
     <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="noNets">
-        <ilpn-file-upload descriptionText="Upload a set of labelled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)" *ngIf="!(loading$ | async)"></ilpn-file-upload>
+        <div *ngIf="!(loading$ | async)" fxLayout="column" fxLayoutAlign="start center">
+            <ilpn-file-upload descriptionText="Upload a set of labelled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
+            <mat-button-toggle-group class="margin-mode-selection" [formControl]="fcMode"  aria-label="mode selection">
+                <mat-button-toggle value="synthesis">Synthesis</mat-button-toggle>
+                <mat-button-toggle value="discovery">Discovery</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
         <mat-spinner *ngIf="loading$ | async" color="accent"></mat-spinner>
     </div>
 

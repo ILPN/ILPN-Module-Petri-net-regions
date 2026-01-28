@@ -27,8 +27,8 @@ export class AppComponent {
     readonly FD_PN = FD_PETRI_NET;
     // TODO arc weights / self-loops
     fcOneBoundRegions = new FormControl<boolean>(false);
-    fcEmptyOutput = new FormControl<boolean>(false);
     fcPartialOrders = new FormControl<boolean>(false);
+    fcMode = new FormControl<string>('synthesis');
     showUploadText = true;
     noNets = true;
     loading$ = new BehaviorSubject<boolean>(false);
@@ -88,7 +88,7 @@ export class AppComponent {
 
         this._regionSynthesisService.synthesise(this._nets, {
             noArcWeights: this.fcOneBoundRegions.value,
-            noOutputPlaces: this.fcEmptyOutput.value,
+            noOutputPlaces: this.fcMode.value === 'discovery',
             obtainPartialOrders: this.fcPartialOrders.value
         }).subscribe((result: SynthesisResult) => {
             const timeEnd = performance.now();
