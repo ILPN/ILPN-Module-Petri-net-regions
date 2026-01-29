@@ -12,15 +12,13 @@ import {
     PetriNetSerialisationService,
     PnOutputFileFormat,
     PostPlaceAdderService,
-    SequenceNetStructure,
     SynthesisResult,
     XesLogParserService,
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
 import {BehaviorSubject, filter, map, merge, Observable, Subject} from "rxjs";
 import {InputTab} from "./model/input-tab";
-import {ParserResult} from "./model/parser-result";
-
+import {MultipleParserResults, ParserResult} from "./model/parser-result";
 
 
 @Component({
@@ -72,39 +70,44 @@ export class AppComponent {
     processFileUpload(fileContent: Array<DropFile>) {
         const parsedNets: Array<ParserResult> = fileContent
             .map(f => {
-                    let net = this._parserService.parse(f.content);
-                    if (net === undefined && f.content.trimStart().charAt(0) === '<') {
+                    let nets: Array<PetriNet | undefined> = [this._parserService.parse(f.content)];
+                    if (nets[0] === undefined && f.content.trimStart().charAt(0) === '<') {
                         // the file is an XML, could be both XES or PNML, and PNML parsing failed
                         let traces = this._logParser.parse(f.content);
                         if (traces.length > 0) {
-                            // the file was an event log => filter unique, take only lifecycle complete events, discard prefixes, and convert to trace model
-                            const transformed = this._traceToPnTransformer.transformToSequenceNets(traces, {
-                                traceAggregation: SequenceNetStructure.TRACE_MODEL,
+                            // the file was an event log => filter unique, take only lifecycle complete events, discard prefixes
+                            nets = this._traceToPnTransformer.transformToSequenceNets(traces, {
                                 cleanLog: true,
                                 discardPrefixes: true
                             });
-                            if (transformed.length === 0) {
-                                // the event log is empty
-                                net = undefined;
-                            } else {
-                                net = transformed[0];
+                            if (nets.length === 0) {
+                                console.warn(`The event log file ${f.name} contains only empty traces. File skipped.`, f.content);
                             }
                         } else {
                             console.warn(`Could not parse file ${f.name}`, f.content);
                         }
                     }
 
-                    return {net, fileName: f.name};
+                    return {nets, fileName: f.name};
                 }
             )
-            .filter(pr => pr.net !== undefined)
-            .map(pr => {
+            .flatMap((apr: MultipleParserResults) => {
+                if (apr.nets.length === 1) {
+                    return [{net: apr.nets[0], fileName: apr.fileName}] as Array<ParserResult>;
+                }
+                return apr.nets.map((net, i) => ({net, fileName: `${apr.fileName} (variant ${i})`}));
+            })
+            .filter((pr: ParserResult) => pr.net !== undefined)
+            .map((pr: ParserResult) => {
                 PetriNet.implyInitialMarking(pr.net!);
                 return pr;
             });
         if (parsedNets.length > 0) {
             this._nets = [...this._nets, ...parsedNets.map(pn => pn.net) as unknown as Array<PetriNet>];
-            this.inputTabs = [...this.inputTabs, ...parsedNets.map(pn => ({id: this._tabIdCounter.next(), label: pn.fileName}))];
+            this.inputTabs = [...this.inputTabs, ...parsedNets.map(pn => ({
+                id: this._tabIdCounter.next(),
+                label: pn.fileName
+            }))];
             this.inputs$.next(this._nets);
             if (this._selectedTabIndex === undefined) {
                 this._selectedTabIndex = 0;
@@ -135,8 +138,8 @@ export class AppComponent {
 
             const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
             console.debug(ser);
-            console.debug('elapsed time in synthesis (without post processing) [ms]', timeEnd-timeStart);
-            console.debug('elapsed time post processing [ms]', timeEndPost-timeEnd);
+            console.debug('elapsed time in synthesis (without post processing) [ms]', timeEnd - timeStart);
+            console.debug('elapsed time post processing [ms]', timeEndPost - timeEnd);
             this.result = new DropFile('result', ser, 'json');
             this.noNets = false;
             this.result$.next(net);
