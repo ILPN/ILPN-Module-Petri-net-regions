@@ -5,18 +5,23 @@ import {
     FD_PETRI_NET,
     IncrementingCounter,
     ImplicitPlaceRemoverService,
+    LogToSequenceNetTransformerService,
     PetriNet,
     PetriNetParserService,
     PetriNetRegionSynthesisService,
     PetriNetSerialisationService,
     PnOutputFileFormat,
     PostPlaceAdderService,
-    SynthesisResult
+    SequenceNetStructure,
+    SynthesisResult,
+    XesLogParserService,
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
 import {BehaviorSubject, filter, map, merge, Observable, Subject} from "rxjs";
 import {InputTab} from "./model/input-tab";
 import {ParserResult} from "./model/parser-result";
+
+
 
 @Component({
     selector: 'app-root',
@@ -51,7 +56,9 @@ export class AppComponent {
                 private _netSerializer: PetriNetSerialisationService,
                 private _postProcessing: DanglingPlaceRemoverService,
                 private _implicitPlaceRemover: ImplicitPlaceRemoverService,
-                private _postPlaceAdder: PostPlaceAdderService) {
+                private _postPlaceAdder: PostPlaceAdderService,
+                private _logParser: XesLogParserService,
+                private _traceToPnTransformer: LogToSequenceNetTransformerService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
         this.showNet$ = new Subject();
@@ -64,7 +71,32 @@ export class AppComponent {
 
     processFileUpload(fileContent: Array<DropFile>) {
         const parsedNets: Array<ParserResult> = fileContent
-            .map(f => ({net: this._parserService.parse(f.content), fileName: f.name}))
+            .map(f => {
+                    let net = this._parserService.parse(f.content);
+                    if (net === undefined && f.content.trimStart().charAt(0) === '<') {
+                        // the file is an XML, could be both XES or PNML, and PNML parsing failed
+                        let traces = this._logParser.parse(f.content);
+                        if (traces.length > 0) {
+                            // the file was an event log => filter unique, take only lifecycle complete events, discard prefixes, and convert to trace model
+                            const transformed = this._traceToPnTransformer.transformToSequenceNets(traces, {
+                                traceAggregation: SequenceNetStructure.TRACE_MODEL,
+                                cleanLog: true,
+                                discardPrefixes: true
+                            });
+                            if (transformed.length === 0) {
+                                // the event log is empty
+                                net = undefined;
+                            } else {
+                                net = transformed[0];
+                            }
+                        } else {
+                            console.warn(`Could not parse file ${f.name}`, f.content);
+                        }
+                    }
+
+                    return {net, fileName: f.name};
+                }
+            )
             .filter(pr => pr.net !== undefined)
             .map(pr => {
                 PetriNet.implyInitialMarking(pr.net!);

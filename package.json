@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "test": "ng test",
+    "test:module": "ng test ilpn-module",
+    "test:components": "ng test ilpn-components",
     "build:components": "ng build ilpn-components",
     "build-local:components": "npm run build:components && npm i ./dist/ilpn-components --save-optional",
     "build": "npm run build-local:components && ng build ilpn-module --base-href /ilovepetrinets/horse/",
