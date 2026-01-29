@@ -95,7 +95,7 @@ export class AppComponent {
                 if (apr.nets.length === 1) {
                     return [{net: apr.nets[0], fileName: apr.fileName}] as Array<ParserResult>;
                 }
-                return apr.nets.map((net, i) => ({net, fileName: `${apr.fileName} (variant ${i})`}));
+                return apr.nets.map((net, i) => ({net, fileName: `${apr.fileName} (variant ${i + 1})`}));
             })
             .filter((pr: ParserResult) => pr.net !== undefined)
             .map((pr: ParserResult) => {
@@ -175,7 +175,7 @@ export class AppComponent {
         }
         this._nets.splice(index, 1);
         this.inputTabs.splice(index, 1)
-        this.inputTabs = [...this.inputTabs] // TODO replace by .toSpliced() when we update JS version
+        this.inputTabs = [...this.inputTabs] // TODO replace by .toSpliced() when we update JS version (ES2023)
         if (this._nets.length === 0) {
             this.noNets = true;
             this._selectedTabIndex = undefined;
