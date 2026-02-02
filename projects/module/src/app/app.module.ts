@@ -9,14 +9,14 @@ import {
     SpringEmbedderLayoutManagerFactoryService
 } from 'ilpn-components';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {APP_BASE_HREF, PlatformLocation} from '@angular/common';
+import {MatIconModule} from "@angular/material/icon";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatTabsModule} from "@angular/material/tabs";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
+import {MatIconButton} from "@angular/material/button";
+import {MatButtonToggle, MatButtonToggleGroup} from "@angular/material/button-toggle";
 
 @NgModule({
     declarations: [
@@ -33,12 +33,13 @@ import {MatButtonModule} from "@angular/material/button";
         }),
         FlexLayoutModule,
         ReactiveFormsModule,
-        MatSlideToggleModule,
         BrowserAnimationsModule,
+        MatIconModule,
         MatProgressSpinnerModule,
         MatTabsModule,
-        MatIconModule,
-        MatButtonModule,
+        MatIconButton,
+        MatButtonToggleGroup,
+        MatButtonToggle,
     ],
     providers: [
         {
