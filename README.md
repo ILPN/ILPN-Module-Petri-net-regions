@@ -16,4 +16,4 @@ to initialize the submodules.
 
 This project uses Angular v17. Prepare your local development environment by following [their instructions](https://v17.angular.io/guide/setup-local).
 
-To build and run the project locally, run the `start` script in the `package.json` file. This will first build the components library, add it as a dependency to the module project and then build and run the module project.
+To build and run the project locally, run the `start` script in the `package.json` file. This will first build the components library, add it as a dependency to the module project, and then build and run the module project.
