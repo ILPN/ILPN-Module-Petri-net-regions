@@ -1,4 +1,4 @@
-# 🐴 Module of the I ❤ Petri nets website.
+# 🐴 Module of the I ❤ Petri nets website
 
 This module implements the synthesis of Petri nets from labelled Petri nets and its most recent version is hosted on the [I ❤ Petri nets](https://www.fernuni-hagen.de/ilovepetrinets/horse) website.
 
