@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {
     DanglingPlaceRemoverService,
     DropFile,
+    FD_LOG,
     FD_PETRI_NET,
     IncrementingCounter,
     ImplicitPlaceRemoverService,
@@ -13,6 +14,7 @@ import {
     PnOutputFileFormat,
     PostPlaceAdderService,
     SynthesisResult,
+    SynthesisUpdate,
     XesLogParserService,
 } from 'ilpn-components';
 import {FormControl} from '@angular/forms';
@@ -29,6 +31,7 @@ import {MultipleParserResults, ParserResult} from "./model/parser-result";
 export class AppComponent {
 
     readonly FD_PN = FD_PETRI_NET;
+    readonly FD_LOG = FD_LOG;
     // TODO arc weights / self-loops
     fcOneBoundRegions = new FormControl<boolean>(false);
     fcPartialOrders = new FormControl<boolean>(false);
@@ -39,6 +42,7 @@ export class AppComponent {
     result: DropFile | undefined;
     result$: BehaviorSubject<PetriNet | undefined>;
     inputs$: BehaviorSubject<Array<PetriNet>>;
+    regionsFound$: BehaviorSubject<number>;
     resultNet$: Observable<PetriNet>;
     inputNet$: Observable<PetriNet>;
     showNet$: Subject<PetriNet>;
@@ -59,6 +63,7 @@ export class AppComponent {
                 private _traceToPnTransformer: LogToSequenceNetTransformerService) {
         this.result$ = new BehaviorSubject<PetriNet | undefined>(undefined);
         this.inputs$ = new BehaviorSubject<Array<PetriNet>>([]);
+        this.regionsFound$ = new BehaviorSubject(0);
         this.showNet$ = new Subject();
         this.resultNet$ = this.result$.pipe(filter(v => v !== undefined)) as Observable<PetriNet>;
         this.inputNet$ = merge(
@@ -119,31 +124,36 @@ export class AppComponent {
     private computeRegions() {
         this.showUploadText = false;
         this.result = undefined;
+        this.regionsFound$.next(0);
         this.loading$.next(true);
 
         const timeStart = performance.now();
 
-        this._regionSynthesisService.synthesise(this._nets, {
+        this._regionSynthesisService.synthesiseWithUpdates(this._nets, {
             noArcWeights: this.fcOneBoundRegions.value,
             noOutputPlaces: this.isDiscoveryMode(),
             obtainPartialOrders: this.fcPartialOrders.value
-        }).subscribe((result: SynthesisResult) => {
-            const timeEnd = performance.now();
+        }).subscribe((resultOrUpdate: SynthesisUpdate | SynthesisResult) => {
+            if (resultOrUpdate instanceof SynthesisUpdate) {
+                this.regionsFound$.next(this.regionsFound$.value + 1);
+            } else {
+                const timeEnd = performance.now();
 
-            let net = this._implicitPlaceRemover.removeImplicitPlaces(this._postProcessing.removeDanglingPlaces(result.result));
-            if (this.isDiscoveryMode()) {
-                net = this._postPlaceAdder.addPostPlaces(net);
+                let net = this._implicitPlaceRemover.removeImplicitPlaces(this._postProcessing.removeDanglingPlaces(resultOrUpdate.result));
+                if (this.isDiscoveryMode()) {
+                    net = this._postPlaceAdder.addPostPlaces(net);
+                }
+                const timeEndPost = performance.now();
+
+                const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
+                console.debug(ser);
+                console.debug('elapsed time in synthesis (without post processing) [ms]', timeEnd - timeStart);
+                console.debug('elapsed time post processing [ms]', timeEndPost - timeEnd);
+                this.result = new DropFile('result', ser, 'json');
+                this.noNets = false;
+                this.result$.next(net);
+                this.loading$.next(false)
             }
-            const timeEndPost = performance.now();
-
-            const ser = this._netSerializer.serialise(net, PnOutputFileFormat.JSON);
-            console.debug(ser);
-            console.debug('elapsed time in synthesis (without post processing) [ms]', timeEnd - timeStart);
-            console.debug('elapsed time post processing [ms]', timeEndPost - timeEnd);
-            this.result = new DropFile('result', ser, 'json');
-            this.noNets = false;
-            this.result$.next(net);
-            this.loading$.next(false)
         });
 
     }

@@ -10,12 +10,17 @@
     <div fxLayout="row" fxLayoutAlign="center center" class="welcome-padding" *ngIf="noNets">
         <div *ngIf="!(loading$ | async)" fxLayout="column" fxLayoutAlign="start center">
             <ilpn-file-upload descriptionText="Upload a set of labelled Petri nets" squareContent="🐴" [showText]="showUploadText" (fileContent)="processFileUpload($event)"></ilpn-file-upload>
-            <mat-button-toggle-group class="margin-mode-selection" [formControl]="fcMode"  aria-label="mode selection">
+            <mat-button-toggle-group class="margin-top" [formControl]="fcMode" aria-label="mode selection">
                 <mat-button-toggle value="synthesis">Synthesis</mat-button-toggle>
                 <mat-button-toggle value="discovery">Discovery</mat-button-toggle>
             </mat-button-toggle-group>
         </div>
-        <mat-spinner *ngIf="loading$ | async" color="accent"></mat-spinner>
+        <div *ngIf="loading$ | async" fxLayout="column" fxLayoutAlign="start center">
+            <span>We are solving some ILPs in your browser. This might take a while.</span>
+            <span>Get yourself a coffee? Discovery is faster than Synthesis.</span>
+            <mat-spinner class="margin-top" color="accent"></mat-spinner>
+            <span class="margin-top">Regions found so far: <b>{{regionsFound$ | async}}</b></span>
+        </div>
     </div>
 
     <!--  Working layout  -->
@@ -68,6 +73,8 @@
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 3" description="Language-based specification, from Figure 3 of the paper" [link]="['assets/Figure-3-1.json','assets/Figure-3-3.json','assets/Figure-3-4.json','assets/Figure-3-6.json']"></ilpn-descriptive-link>
 <!--        <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 3" description="Language-based specification from Figure 3 of the paper" [link]="['assets/Figure-3-1.json','assets/Figure-3-2.json','assets/Figure-3-3.json','assets/Figure-3-4.json','assets/Figure-3-5.json','assets/Figure-3-6.json']"></ilpn-descriptive-link>-->
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="Example 4" description="Two general labelled nets" [link]="['assets/Experiment-4-1.json','assets/Experiment-4-2.json']" [download]="true"></ilpn-descriptive-link>
+        <ilpn-descriptive-link [fileDisplay]="FD_LOG" title="Event log 1" description="Repair example from the ProM framework tutorial [1]" link="assets/repairExample.xes" [download]="true"></ilpn-descriptive-link>
+        <ilpn-descriptive-link [fileDisplay]="FD_LOG" title="Event log 2" description="Reviewing example from Process Mining: Data Science in Action [2]" link="assets/reviewingExample.xes" [download]="true"></ilpn-descriptive-link>
     </div>
 
     <hr class="margin-divider-old-examples">
@@ -78,5 +85,9 @@
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="labelled Petri net" description="Petri net from Figure 8 of the workshop paper" link="assets/net_paper_fig8.pn" [download]="true"></ilpn-descriptive-link>
         <ilpn-descriptive-link [fileDisplay]="FD_PN" title="branching process" description="Petri net from Figure 10 of the workshop paper" link="assets/net_paper_fig10.pn" [download]="true"></ilpn-descriptive-link>
     </div>
+
+    <hr class="margin-divider-old-examples">
+    <span class="margin-top">[1] XES file adopted from <a href="https://promtools.org/prom-6-tutorial/">ProM Tools tutorial</a>. The original file can be downloaded <a href="http://www.promtools.org/prom6/downloads/example-logs.zip">here</a></span>
+    <span>[2] XES file adopted from Chapter 8 of <a href="https://link.springer.com/book/10.1007/978-3-662-49851-4">Process Mining: Data Science in Action</a> by Wil van der Aalst. The original file can be downloaded <a href="http://processmining.org/old-version/event-book.html">here</a></span>
 
 </ilpn-page-layout>
